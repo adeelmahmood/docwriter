@@ -1,0 +1,13 @@
+build
+target
+.classpath
+.settings
+.gradle
+bin
+.project
+SVN
+input
+output
+bower_components
+.apt_generated
+.svn
