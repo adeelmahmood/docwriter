@@ -93,9 +93,6 @@ public class ExcelDocWriter implements DocWriter {
 	public ExcelDocWriter(){			
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.mayo.miris.dw.writer.DocWriter#init(java.util.Map)
-	 */
 	public void init(Map<String, String> reportAttrs) throws DocumentCreationException {
 		log.debug("creating new excel document");
 		//reset local vars
