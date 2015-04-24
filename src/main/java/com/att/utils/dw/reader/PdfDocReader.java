@@ -13,12 +13,6 @@ import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
-/**
- * PdfDocReader class
- * Provides pdf document reading functionality
- * 
- * @author m057188
- */
 public class PdfDocReader {
 	private Logger log = LoggerFactory.getLogger(PdfDocReader.class);
 	

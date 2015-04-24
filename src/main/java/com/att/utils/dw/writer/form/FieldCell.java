@@ -11,40 +11,26 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPCellEvent;
 import com.lowagie.text.pdf.PdfWriter;
 
-/**
- * Uses events to add form fields to a table
- * @author m057188
- *
- */
 public class FieldCell implements PdfPCellEvent {
 	private Log log = LogFactory.getLog(FieldCell.class);
-	
+
 	PdfFormField formField;
 	PdfWriter writer;
 	int width;
-	
-	public FieldCell(PdfFormField formField, int width, PdfWriter writer){
+
+	public FieldCell(PdfFormField formField, int width, PdfWriter writer) {
 		this.formField = formField;
 		this.width = width;
 		this.writer = writer;
 	}
-	
-	public void cellLayout(PdfPCell cell, Rectangle rect, PdfContentByte[] canvas){
-		try{
-			// delete cell border
-			/*PdfContentByte cb = canvas[PdfPTable.LINECANVAS];
-			cb.reset();*/
-			
-			formField.setWidget(
-				new Rectangle(rect.getLeft(), 
-					rect.getBottom(), 
-					rect.getLeft()+width, 
-					rect.getTop()), 
-					PdfAnnotation
-					.HIGHLIGHT_NONE);
-			
+
+	public void cellLayout(PdfPCell cell, Rectangle rect, PdfContentByte[] canvas) {
+		try {
+			formField.setWidget(new Rectangle(rect.getLeft(), rect.getBottom(), rect.getLeft() + width, rect.getTop()),
+					PdfAnnotation.HIGHLIGHT_NONE);
+
 			writer.addAnnotation(formField);
-		}catch(Exception e){
+		} catch (Exception e) {
 			log.error("error in field cell event handler", e);
 		}
 	}

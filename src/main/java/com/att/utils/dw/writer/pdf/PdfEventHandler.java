@@ -22,49 +22,35 @@ import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
-/**
- * PdfEventHandler handles functionality such as adding
- * watermarks or page footers
- * 
- * @author aq728y
- *
- */
 public class PdfEventHandler implements PdfPageEvent {
 	private Log log = LogFactory.getLog(PdfEventHandler.class);
-	
+
 	private String watermark;
 	private String layout;
-	
-	//member variables
+
 	private BaseFont helv;
 	private PdfGState gState;
-	//private BaseColor color;
-	
+
 	private PdfTemplate footer;
-	
+
 	private Date printed;
 	private SimpleDateFormat dateFormat;
-	
+
 	private Image image = null;
-	
-	public PdfEventHandler(){
+
+	public PdfEventHandler() {
 		watermark = "";
 		dateFormat = new SimpleDateFormat("MM/dd/yy - h:mm a z");
 	}
-	
-	public void onChapter(PdfWriter arg0, Document arg1, float arg2,
-			Paragraph arg3) {
-		// TODO Auto-generated method stub
 
+	public void onChapter(PdfWriter arg0, Document arg1, float arg2, Paragraph arg3) {
 	}
 
 	public void onChapterEnd(PdfWriter arg0, Document arg1, float arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onCloseDocument(PdfWriter arg0, Document arg1) {
-		//write contents of footer template
+		// write contents of footer template
 		footer.beginText();
 		footer.setFontAndSize(helv, 9);
 		footer.setTextMatrix(0, 0);
@@ -76,142 +62,138 @@ public class PdfEventHandler implements PdfPageEvent {
 		PdfContentByte contentUnder = writer.getDirectContent();
 		contentUnder.saveState();
 		contentUnder.setFontAndSize(helv, 9);
-		
-		//add footer
+
+		// add footer
 		contentUnder.beginText();
-		
-		//show page numbers footer
+
+		// show page numbers footer
 		String text = "Page " + writer.getPageNumber() + " of ";
 		float textBase = document.bottom() - 20;
 		float textSize = helv.getWidthPoint(text, 9);
-		
-		//place footer
+
+		// place footer
 		contentUnder.setTextMatrix(document.right() - textSize, textBase);
 		contentUnder.showText(text);
 		contentUnder.endText();
-		contentUnder.addTemplate(footer, document.right(), textBase);	
-		
-		//add printer on
+		contentUnder.addTemplate(footer, document.right(), textBase);
+
+		// add printer on
 		contentUnder.beginText();
 
-		//show printed on date
+		// show printed on date
 		text = "Printed on " + dateFormat.format(printed);
-		
-		//place printer on text
+
+		// place printer on text
 		contentUnder.setTextMatrix(document.left(), textBase);
 		contentUnder.showText(text);
 		contentUnder.endText();
-		
-		//add watermark
-		if(watermark != null && watermark.length() > 0){
-			//text watermark
-			if(watermark.startsWith("text:")){
+
+		// add watermark
+		if (watermark != null && watermark.length() > 0) {
+			// text watermark
+			if (watermark.startsWith("text:")) {
 				String watermarkText = watermark.split("text:")[1];
-				//for text watermark there can be three lines
+				// for text watermark there can be three lines
 				String[] watermarks = watermarkText.split(",");
-				//use text watermark instead
+				// use text watermark instead
 				contentUnder.beginText();
 				contentUnder.setColorFill(Color.GRAY);
-				contentUnder.setFontAndSize(helv, 40);				
-				//show text
-				if(watermarks.length > 0){
-					contentUnder.showTextAligned(Element.ALIGN_CENTER, watermarks[0], document.getPageSize().getWidth()/2 - 38, document.getPageSize().getHeight()/2+60, 45);
+				contentUnder.setFontAndSize(helv, 40);
+				// show text
+				if (watermarks.length > 0) {
+					contentUnder
+							.showTextAligned(Element.ALIGN_CENTER, watermarks[0],
+									document.getPageSize().getWidth() / 2 - 38,
+									document.getPageSize().getHeight() / 2 + 60, 45);
 				}
-				if(watermarks.length > 1){
-					contentUnder.showTextAligned(Element.ALIGN_CENTER, watermarks[1], document.getPageSize().getWidth()/2, document.getPageSize().getHeight()/2, 45);
+				if (watermarks.length > 1) {
+					contentUnder.showTextAligned(Element.ALIGN_CENTER, watermarks[1],
+							document.getPageSize().getWidth() / 2, document.getPageSize().getHeight() / 2, 45);
 				}
-				if(watermarks.length > 2){
-					contentUnder.showTextAligned(Element.ALIGN_CENTER, watermarks[2], document.getPageSize().getWidth()/2 + 60, document.getPageSize().getHeight()/2-40, 45);
+				if (watermarks.length > 2) {
+					contentUnder
+							.showTextAligned(Element.ALIGN_CENTER, watermarks[2],
+									document.getPageSize().getWidth() / 2 + 60,
+									document.getPageSize().getHeight() / 2 - 40, 45);
 				}
 				contentUnder.endText();
-				//contentUnder.setColorFill(BaseColor.BLACK);
+				// contentUnder.setColorFill(BaseColor.BLACK);
 			}
-			//image watermark
-			else if(watermark.startsWith("image:")){
-				try{
+			// image watermark
+			else if (watermark.startsWith("image:")) {
+				try {
 					contentUnder.setGState(gState);
 					String watermarkPath = watermark.split("image:")[1];
-					//initialize watermark image
+					// initialize watermark image
 					image = Image.getInstance(watermarkPath);
-					
-					//adjust image positioning based on report layout
+
+					// adjust image positioning based on report layout
 					int offsetX = -80;
 					int offsetY = -80;
-					if("portrait".equalsIgnoreCase(layout)){
+					if ("portrait".equalsIgnoreCase(layout)) {
 						offsetX = 20;
-						offsetY = -150; 
+						offsetY = -150;
 					}
-					
-					//add image to page
-					contentUnder.addImage(image, image.getWidth(), 0, 0, image.getHeight(), 
-							document.getPageSize().getWidth()-image.getWidth()+offsetX, 
-							document.getPageSize().getHeight()-image.getHeight()+offsetY);
+
+					// add image to page
+					contentUnder.addImage(image, image.getWidth(), 0, 0, image.getHeight(), document.getPageSize()
+							.getWidth() - image.getWidth() + offsetX,
+							document.getPageSize().getHeight() - image.getHeight() + offsetY);
 				} catch (Exception e) {
 					log.error("error in adding watermark image " + e);
 				}
 			}
 		}
-		
-		//close editing
-		contentUnder.restoreState();	
+
+		// close editing
+		contentUnder.restoreState();
 	}
 
-	public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2,
-			String arg3) {
+	public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2, String arg3) {
 		// TODO Auto-generated method stub
 	}
 
 	public void onOpenDocument(PdfWriter arg0, Document arg1) {
 		printed = Calendar.getInstance().getTime();
-		
-		//set footer page stamping template
+
+		// set footer page stamping template
 		footer = arg0.getDirectContent().createTemplate(100, 100);
 		footer.setBoundingBox(new Rectangle(-20, -20, 100, 100));
-		
+
 		try {
-			//initialize watermark font
-			helv = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);			
+			// initialize watermark font
+			helv = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 		} catch (DocumentException e) {
 			log.error("error in open document " + e);
 		} catch (IOException e) {
 			log.error("error in open document " + e);
 		}
-		
-		//set the gstate 
+
+		// set the gstate
 		gState = new PdfGState();
 		gState.setFillOpacity(0.2f);
-		gState.setStrokeOpacity(0.2f); 
+		gState.setStrokeOpacity(0.2f);
 	}
 
 	public void onParagraph(PdfWriter arg0, Document arg1, float arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onParagraphEnd(PdfWriter arg0, Document arg1, float arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
-	public void onSection(PdfWriter arg0, Document arg1, float arg2, int arg3,
-			Paragraph arg4) {
-		// TODO Auto-generated method stub
-
+	public void onSection(PdfWriter arg0, Document arg1, float arg2, int arg3, Paragraph arg4) {
 	}
 
 	public void onSectionEnd(PdfWriter arg0, Document arg1, float arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onStartPage(PdfWriter arg0, Document arg1) {
-		//set watermark color
-		/*if(arg0.getPageNumber() % 2 == 1){
-			color = BaseColor.BLUE;
-		}
-		else{*/
-			//color = BaseColor.BLUE;
-		//}
+		// set watermark color
+		/*
+		 * if(arg0.getPageNumber() % 2 == 1){ color = BaseColor.BLUE; } else{
+		 */
+		// color = BaseColor.BLUE;
+		// }
 	}
 
 	public void setWatermark(String watermark) {

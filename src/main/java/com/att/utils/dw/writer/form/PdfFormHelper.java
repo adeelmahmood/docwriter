@@ -11,34 +11,24 @@ import com.lowagie.text.pdf.PdfBorderDictionary;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.TextField;
 
-/**
- * Provides helper methods to create forms
- * 
- * @author m057188
- *
- */
 public class PdfFormHelper {
 	private Log log = LogFactory.getLog(PdfFormHelper.class);
-	
-	public PdfFormHelper(){
-		
+
+	public PdfFormHelper() {
+
 	}
-	
-	/**
-	 * create a text field that can be embedded
-	 * into a pdf acro form
-	 */
-	public TextField createTextField(PdfWriter writer, String name, boolean required){
-		log.debug("creating a text field");		
-		//create new text field
-		TextField textfield = new TextField(writer, new Rectangle(0,0,200,10), name);
+
+	public TextField createTextField(PdfWriter writer, String name, boolean required) {
+		log.debug("creating a text field");
+		// create new text field
+		TextField textfield = new TextField(writer, new Rectangle(0, 0, 200, 10), name);
 		textfield.setBackgroundColor(Color.WHITE);
 		textfield.setBorderColor(Color.BLACK);
 		textfield.setBorderWidth(1);
 		textfield.setBorderStyle(PdfBorderDictionary.STYLE_SOLID);
 		textfield.setText("");
 		textfield.setAlignment(Element.ALIGN_LEFT);
-		if(required){
+		if (required) {
 			textfield.setOptions(TextField.REQUIRED);
 		}
 		return textfield;
