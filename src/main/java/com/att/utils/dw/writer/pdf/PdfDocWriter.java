@@ -43,9 +43,6 @@ public class PdfDocWriter implements DocWriter {
 
 	private ByteArrayOutputStream baos;
 
-	public PdfDocWriter() {
-	}
-
 	public void init(Map<String, String> reportAttrs) throws DocumentCreationException {
 		log.debug("creating new pdf document");
 		// reset local vars
