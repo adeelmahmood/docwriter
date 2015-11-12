@@ -33,6 +33,11 @@ public class CsvWriterTest extends AbstractWriterTest {
 		for (int i = 1; i <= vals; i++) {
 			docWriter.addCell("Value " + i, attrs);
 		}
+		
+		docWriter.addCell("TotalRecords", attrs);
+		docWriter.addCell("=", attrs);
+		docWriter.addCell("100", attrs);
+		
 		docWriter.endTable();
 	}
 }

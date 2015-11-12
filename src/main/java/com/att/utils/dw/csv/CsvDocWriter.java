@@ -79,6 +79,17 @@ public class CsvDocWriter implements DocWriter {
 
 	@Override
 	public void endTable() throws DocumentCreationException {
+		if (colValues.size() > 0 && colValues.size() <= numCols) {
+			try {
+				CellProcessor[] proc = new CellProcessor[colValues.size()];
+				for (int i = 0; i < colValues.size(); i++) {
+					proc[i] = processors[i];
+				}
+				writer.write(colValues, proc);
+			} catch (IOException e) {
+				throw new DocumentCreationException(e.getMessage());
+			}
+		}
 	}
 
 	@Override
